@@ -1,0 +1,58 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    # どのブランチに push されたときにワークフローを実行するか
+    branches:
+      - main
+
+permissions:
+  # リポジトリの内容を読む権限
+  contents: read
+  # GitHub Pages にデプロイする権限（公式方式で必須）
+  pages: write
+  # GitHub がデプロイを認証するために必要な権限（公式方式で必須）
+  id-token: write
+
+jobs:
+  # ビルドジョブ
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # 1.リポジトリのコードを GitHubActions 環境にチェックアウト
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2.Node.js(v24) をインストール
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # 3.package.json に基づき依存関係をインストール
+      - name: Install dependencies
+        run: npm ci
+
+      # 4.Next.js アプリケーションをビルドし、静的ファイルを生成
+      - name: Build
+        run: npm run build
+
+      # 5.ビルド成果物を GitHub Pages 用の artifact としてアップロード
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+
+  # デプロイジョブ
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # 1. ビルドジョブでアップロードされた artifact をダウンロード
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
