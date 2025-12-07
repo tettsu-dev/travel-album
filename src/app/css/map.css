@@ -1,0 +1,6 @@
+.prefecture {
+  cursor: pointer;
+}
+.prefecture:hover {
+  fill: #d0eef0;
+}
