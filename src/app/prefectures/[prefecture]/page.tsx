@@ -13,6 +13,7 @@ interface AlbumData {
 }
 
 export function generateStaticParams() {
+  // albumDataJsonのキー（都道府県名）を取得し、{prefecture: 都道府県名}の形式で返す
   return Object.keys(albumDataJson).map((prefecture: string) => ({
     prefecture,
   }));
@@ -23,7 +24,7 @@ export default async function PrefecturePage({ params }: PrefecturePageProps) {
   // album-data.jsonから対象の都道府県の日付データを取得し、昇順でソート
   const albumData = albumDataJson as AlbumData;
   const dates = Object.keys(albumData[prefecture] || {}).sort();
-
+  
   return (
     <div>
       <h1>{prefecture}</h1>
