@@ -31,7 +31,7 @@ export default async function DatePage({ params }: DatePageProps) {
   const { prefecture, date } = await params;
   const albumData = albumDataJson as AlbumData;
   const photos = albumData[prefecture]?.[date] || [];
-  const folderPath = process.env.NODE_ENV === 'production' ? '' : '/travel-album';
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? '';
 
   return (
     <div>
@@ -42,7 +42,7 @@ export default async function DatePage({ params }: DatePageProps) {
         </Link>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {photos.map((photo, index) => (
-            <img key={index} src={`${folderPath}${photo}`} alt={photo} />
+            <img key={index} src={`${basePath}${photo}`} alt={photo} />
           ))}
         </div>
       </div>
